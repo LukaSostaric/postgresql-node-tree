@@ -1,3 +1,35 @@
+/*
+ *	Copyright (C) 2010 Luka Sostaric. PostgreSQL Node Tree is
+ *	distributed under the terms of the GNU General Public
+ *	License.
+ *
+ *	This program is free software: You can redistribute and/or modify
+ *	it under the terms of the GNU General Public License, as published by
+ *	the Free Software Foundation, either version 3 of the License, or
+ *	(at your option) any later version.
+ *
+ *	This program is distributed in the hope that it will be useful,
+ *	but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *	GNU General Public License for more details.
+ *
+ *	You should have received a copy of the GNU General Public License
+ *	along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *	Program Information
+ *	-------------------
+ *	Program Name: PostgreSQL Node Tree
+ *	Module Name: Node Tree
+ *	External Components Used: None
+ *	Required Modules: None
+ *	License: GNU GPL
+ *
+ *	Author Information
+ *	------------------
+ *	Full Name: Luka Sostaric
+ *	E-mail: <luka@lukasostaric.com>
+ *	Website: <http://lukasostaric.com>
+ */
 drop function insert_node(text, text, integer);
 create function insert_node(_name text, _description text, _slug text, _parent_id integer)
 returns void as $$
@@ -10,7 +42,7 @@ declare rowcount integer;
 	subjectrgt integer;
 	childrencount integer;
 begin
-	select COUNT(*) into rowcount from nodetree;
+	select count(*) into rowcount from nodetree;
 	if rowcount = 0 then
 		insert into nodetree(name, description, slug, xleft, xright)
 		values(_name, _description, _slug, 1, 2);
@@ -22,7 +54,7 @@ begin
 		else
 			select xleft, xright into subjectlft, subjectrgt from nodetree
 			where id = _parent_id;
-			select COUNT(*) into childrencount from nodetree
+			select count(*) into childrencount from nodetree
 				where xleft > subjectlft and xright < subjectrgt;
 			if childrencount = 0 then
 				update nodetree set xright = xright + 2 where xright >= subjectrgt;
