@@ -32,7 +32,7 @@
  */
 DROP FUNCTION insert_node(text, text, integer);
 CREATE FUNCTION insert_node(_name text, _description text, _slug text, _parent_id integer)
-RETURNS VOID AS $$
+RETURNS void AS $$
 DECLARE rowcount integer;
     lft integer;
     rgt integer;
