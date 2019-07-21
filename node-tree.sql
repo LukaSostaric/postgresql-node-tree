@@ -30,31 +30,31 @@
  *  E-mail: luka@lukasostaric.com
  *  Website: www.lukasostaric.com
  */
-DROP FUNCTION insert_node(text, text, integer);
-CREATE FUNCTION insert_node(_name text, _description text, _slug text, _parent_id integer)
-RETURNS void AS $$
-DECLARE rowcount integer;
-    lft integer;
-    rgt integer;
-    maxlft integer;
-    maxrgt integer;
-    subjectlft integer;
-    subjectrgt integer;
-    childrencount integer;
+DROP FUNCTION insert_node(text, text, INTEGER);
+CREATE FUNCTION insert_node(_name text, _description text, _slug text, _parent_id INTEGER)
+RETURNS VOID AS $$
+DECLARE rowcount INTEGER;
+    lft INTEGER;
+    rgt INTEGER;
+    maxlft INTEGER;
+    maxrgt INTEGER;
+    subjectlft INTEGER;
+    subjectrgt INTEGER;
+    childrencount INTEGER;
 BEGIN
-    SELECT count(*) INTO rowcount FROM nodetree;
+    SELECT COUNT(*) INTO rowcount FROM nodetree;
     IF rowcount = 0 THEN
         INSERT INTO nodetree(name, description, slug, xleft, xright)
             VALUES(_name, _description, _slug, 1, 2);
     ELSE
         IF _parent_id IS NULL THEN
-            SELECT max(xright) + 1, max(xright) + 2 INTO lft, rgt FROM nodetree;
+            SELECT MAX(xright) + 1, MAX(xright) + 2 INTO lft, rgt FROM nodetree;
             INSERT INTO nodetree(name, description, slug, xleft, xright)
                 VALUES(_name, _description, _slug, lft, rgt);
         ELSE
             SELECT xleft, xright INTO subjectlft, subjectrgt FROM nodetree
                 WHERE id = _parent_id;
-            SELECT count(*) INTO childrencount FROM nodetree
+            SELECT COUNT(*) INTO childrencount FROM nodetree
                 WHERE xleft > subjectlft AND xright < subjectrgt;
             IF childrencount = 0 THEN
                 UPDATE nodetree SET xright = xright + 2 WHERE xright >= subjectrgt;
@@ -62,7 +62,7 @@ BEGIN
                 INSERT INTO nodetree(name, description, slug, xleft, xright)
                     VALUES(_name, _description, _slug, subjectlft + 1, subjectlft + 2);
             ELSE
-                SELECT max(xleft), max(xright) INTO maxlft, maxrgt
+                SELECT MAX(xleft), MAX(xright) INTO maxlft, maxrgt
                     FROM nodetree WHERE xleft > subjectlft
                     AND xright < subjectrgt;
                 UPDATE nodetree SET xleft = xleft + 2 WHERE xleft > maxlft;
@@ -74,8 +74,8 @@ BEGIN
     END IF;
 END; $$
 LANGUAGE plpgsql;
-DROP FUNCTION delete_node(integer);
-CREATE FUNCTION delete_node(_id integer) RETURNS void AS $$
+DROP FUNCTION delete_node(INTEGER);
+CREATE FUNCTION delete_node(_id INTEGER) RETURNS VOID AS $$
 BEGIN
     SELECT xleft, xright INTO subjectlft, subjectrgt FROM nodetree WHERE id = _id;
     DELETE FROM nodetree WHERE xleft >= subjectlft AND xright <= subjectrgt;
