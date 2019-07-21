@@ -30,8 +30,8 @@
  *  E-mail: luka@lukasostaric.com
  *  Website: www.lukasostaric.com
  */
-DROP FUNCTION insert_node(text, text, INTEGER);
-CREATE FUNCTION insert_node(_name text, _description text, _slug text, _parent_id INTEGER)
+DROP FUNCTION insert_node(TEXT, TEXT, INTEGER);
+CREATE FUNCTION insert_node(_name TEXT, _description TEXT, _slug TEXT, _parent_id INTEGER)
 RETURNS VOID AS $$
 DECLARE rowcount INTEGER;
     lft INTEGER;
